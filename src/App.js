@@ -6,6 +6,7 @@ import Create from "./pages/create/Create";
 import Login from "./pages/login/Login";
 import Signup from "./pages/signup/Signup";
 import Project from "./pages/project/Project";
+import OnlineUsers from "./components/OnlineUsers";
 
 // styles
 import "./App.css";
@@ -17,7 +18,7 @@ function App() {
     <div className="App">
       {authIsReady && (
         <BrowserRouter>
-        <Sidebar />
+        {user && <Sidebar />}
           <div className="container">
             <Navbar />
             <Routes>
@@ -28,6 +29,7 @@ function App() {
               <Route path="signup" element={!user ? <Signup /> : <Navigate to= "/" />} />
             </Routes>
           </div>
+          {user && <OnlineUsers />}
         </BrowserRouter>
       )}
     </div>
