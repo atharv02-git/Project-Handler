@@ -13,7 +13,8 @@ export default function OnlineUsers() {
         {isPending && <div>Loading users...</div>}
         {error && <div className="error">{error}</div>} 
         {document && document.map(user => (
-            <div key={user.id} className='user-list-item'> {/* where id the document id  */}
+            <div key={user.id} className='user-list-item'> {/* where id is the document id  */}
+                {user.online && <span className='online-user'></span>} {/** Online status of the user */}
                 <span>{user.displayName}</span>
                 <Avatar src={ user.photoURL }/> {/* where src is the prop we defiend */}
             </div>
