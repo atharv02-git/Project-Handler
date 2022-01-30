@@ -1,28 +1,43 @@
-import Select from 'react-select'
-import { useState } from "react";
+import Select from "react-select";
+import { useEffect, useState } from "react";
+import { useCollection } from "../../hooks/useCollection";
 // styles
 import "./Create.css";
 
 const categories = [
-  { value: 'development', label: 'Development' },
-  { value: 'design', label: 'Design' },
-  { value: 'sales', label: 'Sales' },
-  { value: 'marketing', label: 'Marketing' },
-]
+  { value: "development", label: "Development" },
+  { value: "design", label: "Design" },
+  { value: "sales", label: "Sales" },
+  { value: "marketing", label: "Marketing" },
+];
 
 export default function Create() {
+  // here we have extracted document property from the useCollection hook from 'users' collection so that we can assign users to assignedUsers state
+  const { document } = useCollection("users");
+  const [users, setUsers] = useState([]); //in this array we are going to return an object just like categories array 
+
   const [name, setName] = useState("");
   const [details, setDetails] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [category, setCategory] = useState("");
   const [assignedUsers, setAssignedUsers] = useState([]);
-  
+
+  // this useEffect runs initially when the component mounts and then after every update in document
+  useEffect(() => {
+    if (document) {
+      const options = document.map((user) => {
+        return { value: user, label: user.displayName };
+      });
+      setUsers(options);
+    }
+  }, [document]);
+
   const submitHandler = (e) => {
     e.preventDefault();
-    console.log(name, details, dueDate, category)
-  }
+    console.log(name, details, dueDate, category, assignedUsers);
+  };
   return (
-    <div className='create-form'>
+    <div className="create-form">
       <h2 className="page-title">Create a new project</h2>
       <form onSubmit={submitHandler}>
         <label>
@@ -61,7 +76,11 @@ export default function Create() {
         </label>
         <label>
           <span>Assigned to: </span>
-          {/* asignee goes here */}
+          <Select
+            onChange={(option) => setAssignedUsers(option)}
+            options={users}
+            isMulti //this property allows to select multiple options
+          />
         </label>
         <button className="btn">Submit</button>
       </form>
