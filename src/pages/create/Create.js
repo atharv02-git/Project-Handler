@@ -21,6 +21,7 @@ export default function Create() {
   const [dueDate, setDueDate] = useState("");
   const [category, setCategory] = useState("");
   const [assignedUsers, setAssignedUsers] = useState([]);
+  const [formError, setFormError] = useState(null)
 
   // this useEffect runs initially when the component mounts and then after every update in document
   useEffect(() => {
@@ -34,6 +35,16 @@ export default function Create() {
 
   const submitHandler = (e) => {
     e.preventDefault();
+    setFormError(null); //initially we need to reset the form so that it won't give error after submitting the form'
+    // checking form erros
+    if(!category){
+      setFormError('Please select a category')
+      return
+    }
+    if(assignedUsers.length < 1){
+      setFormError('Please assign the project to at least one user')
+      return
+    }
     console.log(name, details, dueDate, category, assignedUsers);
   };
   return (
@@ -83,6 +94,7 @@ export default function Create() {
           />
         </label>
         <button className="btn">Submit</button>
+        {formError && <p className="error">{ formError }</p>} 
       </form>
     </div>
   );
