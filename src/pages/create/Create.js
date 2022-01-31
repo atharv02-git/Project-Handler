@@ -1,8 +1,12 @@
 import Select from "react-select";
+import { useNavigate } from 'react-router-dom';
+
+// hooks
 import { useEffect, useState } from "react";
 import { useCollection } from "../../hooks/useCollection";
-import { timeStamp } from "../../firebase/config";
+import { timestamp } from "../../firebase/config";
 import { useAuthContext } from "../../hooks/useAuthContext";
+import { useFirestore } from "../../hooks/useFirestore";
 // styles
 import "./Create.css";
 
@@ -17,7 +21,7 @@ export default function Create() {
   // here we have extracted document property from the useCollection hook from 'users' collection so that we can assign users to assignedUsers state
   const { document } = useCollection("users");
   const [users, setUsers] = useState([]); //in this array we are going to return an object just like categories array
-
+  // form states
   const [name, setName] = useState("");
   const [details, setDetails] = useState("");
   const [dueDate, setDueDate] = useState("");
@@ -25,7 +29,11 @@ export default function Create() {
   const [assignedUsers, setAssignedUsers] = useState([]);
   const [formError, setFormError] = useState(null);
 
+  // Invoking our hooks
   const { user } = useAuthContext();
+  const { adddocument, response } = useFirestore('projects');
+  const navigate = useNavigate();
+
   // this useEffect runs initially when the component mounts and then after every update in document
   useEffect(() => {
     if (document) {
@@ -36,7 +44,7 @@ export default function Create() {
     }
   }, [document]);
 
-  const submitHandler = (e) => {
+  const submitHandler = async(e) => {
     e.preventDefault();
     setFormError(null); //initially we need to reset the form so that it won't give error after submitting the form'
     // checking form erros
@@ -67,12 +75,16 @@ export default function Create() {
       name,
       details,
       category: category.value,
-      dueDate: timeStamp.fromDate(new Date(dueDate)),
+      dueDate: timestamp.fromDate(new Date(dueDate)),
       assignedUsersList,
       createdBy,
       comments: [],
     };
-    console.log(project);
+    // adding document to our firestore database
+    await adddocument(project);
+    if(!response.error){
+      navigate('/');
+    }
   };
   return (
     <div className="create-form">

@@ -12,15 +12,15 @@ const firebaseConfig = {
   appId: process.env.REACT_APP_FIREBASE_APP_ID,
 };
 
-// Init firebase
-firebase.initializeApp(firebaseConfig);
+// init firebase
+firebase.initializeApp(firebaseConfig)
 
-// Init firestore and auth
-const projectFirestore = firebase.firestore();
-const projectAuth = firebase.auth();
-const projectStorage = firebase.storage();
+// init services
+const projectFirestore = firebase.firestore()
+const projectAuth = firebase.auth()
+const projectStorage = firebase.storage()
 
-// TimeStamp
-const timeStamp = firebase.firestore.Timestamp;
+// timestamp
+const timestamp = firebase.firestore.Timestamp
 
-export { projectFirestore, projectAuth, projectStorage ,timeStamp };
+export { projectFirestore, projectAuth, timestamp, projectStorage }
