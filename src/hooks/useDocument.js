@@ -7,12 +7,16 @@ export const useDocument = (collection, id) => {
 
   // get real time collection of documents
   useEffect(() => {
-    const ref = projectFirestore.collection.doc(id); //.doc(id) is used to refer the document of particular id
+    const ref = projectFirestore.collection(collection).doc(id); //.doc(id) is used to refer the document of particular id
 
-    const unSubscribe = ref.onSnapshot(
-      (snapshot) => {
+    const unSubscribe = ref.onSnapshot((snapshot) => {
+        if(snapshot.data()){
         setDocument({ ...snapshot.data(), id: snapshot.id }); //setDocument returns an object including the data we fetch from the document using .data() method and id of that document
         setError(null);
+        }
+        else{
+            setError('Oops, no such document exists :(')
+        }
       },
       (err) => {
         console.log(err.message);
@@ -20,7 +24,7 @@ export const useDocument = (collection, id) => {
       }
     );
 
-    // unsubscribing on unMount i.e: if the user moves to diff page then it won't subscribe to the data and then automaticatically unsubscribes
+    // unsubscribing on unMount i.e: if the user navigates to diff page then it won't subscribe to the data and then automaticatically unsubscribes
     return () => unSubscribe();
   }, [collection, id]);
 
